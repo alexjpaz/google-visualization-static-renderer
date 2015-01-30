@@ -1,0 +1,7 @@
+charts:
+  build: .
+  entrypoint:
+    - phantomjs
+    - /app/app.js
+  ports:
+    - "10000:8080"
