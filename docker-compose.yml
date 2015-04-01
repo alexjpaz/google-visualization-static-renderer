@@ -1,7 +1,23 @@
-charts:
-  build: .
+phantomjs:
+  image: alexjpaz/phantomjs
   entrypoint:
-    - ls
-    - /
+    - phantomjs
+    - /app/phantomjs-runner.js
+    - http://192.168.59.103:8081/simple.html
   ports:
-    - "10000:8080"
+    - "8080:8080"
+    #- "9090:8000"
+  volumes:
+    - app:/app
+    - .tmp/:/var/phantomjs/
+
+charts:
+  image: dockerfile/nginx
+  expose:
+    - "9999:80"
+  ports:
+    - "8081:80"
+  volumes:
+    - app:/var/www/html
+
+
