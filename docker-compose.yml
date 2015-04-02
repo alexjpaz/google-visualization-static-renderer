@@ -3,21 +3,29 @@ phantomjs:
   entrypoint:
     - phantomjs
     - /app/phantomjs-runner.js
-    - http://192.168.59.103:8081/simple.html
+    - http://192.168.59.103:8081/gvcharts.html
   ports:
     - "8080:8080"
     #- "9090:8000"
+  expose:
+    - "6666:8080"
   volumes:
     - app:/app
     - .tmp/:/var/phantomjs/
 
-charts:
+staticWeb:
   image: dockerfile/nginx
-  expose:
-    - "9999:80"
   ports:
     - "8081:80"
   volumes:
     - app:/var/www/html
 
-
+proxy:
+  image: dockerfile/nodejs
+  ports:
+    - "9999:9999"
+  volumes:
+    - app:/app
+  entrypoint:
+    - node
+    - /app/proxy.js

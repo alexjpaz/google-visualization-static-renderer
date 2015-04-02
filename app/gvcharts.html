@@ -6,8 +6,12 @@
   <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <script type="text/javascript">
     google.load("visualization", '1', {packages:['corechart']});
-    google.setOnLoadCallback(drawChart);
-    function execute() {
+
+    google.setOnLoadCallback(function() {
+      window.callPhantom({'ready': true});
+    });
+
+    function execute(request) {
 
       var data = google.visualization.arrayToDataTable([
         ['Element', 'Density', { role: 'style' }],
@@ -18,7 +22,7 @@
       ]);
 
       var options = {
-        title: "Density of Precious Metals, in g/cm^3",
+        title: JSON.stringify(request),
         bar: {groupWidth: '95%'},
         legend: 'none',
       };
@@ -29,7 +33,9 @@
       // Wait for the chart to finish drawing before calling the getImageURI() method.
       google.visualization.events.addListener(chart, 'ready', function () {
         if (typeof window.callPhantom === 'function') {
-          window.callPhantom({ hello: chart.getImageURI() });
+          window.callPhantom({
+            base64: chart.getImageURI().slice(22)
+          });
         }
       });
 
@@ -40,4 +46,13 @@
 
 <div id='chart_div'></div>
 
+  <script>
+    function getPhantomRunnerDefinition() {
+      return {
+        executeOnPageLoad: false,
+        isAsync: true,
+        execute: execute
+      }
+    }
+  </script>
 </html>
