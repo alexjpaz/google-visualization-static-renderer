@@ -1,33 +1,48 @@
 var http = require('http');
+var URL = require('url');
 
 http.createServer(function (req, res) {
 
   try {
-    http.request({
-      host: '192.168.59.103',
-      port: 8080,
-      path: '/integers/?num=1&min=1&max=10&col=1&base=10&format=plain&rnd=new'
-    }, function(response) {
-      var str = '';
+    console.log(req.url);
 
-      response.on('data', function (chunk) {
-        str += chunk;
-      });
+    var url = URL.parse(req.url, true);
 
-      response.on('end', function () {
-        var bin = new Buffer(str, 'base64');
-        var expires = new Date();
+    if(url.pathname === "/chart") {
+      var json = JSON.parse(JSON.stringify(url.query.json));
 
-        res.writeHead(200, {
-          'Content-Type': 'image/png',
-          'Content-Length': bin.length,
-          'Cache-Control': 'public, max-age=600',
+      http.request({
+        host: '192.168.59.103',
+        port: 8080,
+        path: req.url
+      }, function(response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+          str += chunk;
         });
-        res.end(bin);
-      });
-    }).end();
+
+        response.on('end', function () {
+          var bin = new Buffer(str, 'base64');
+          var expires = new Date();
+
+          res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': bin.length,
+            'Cache-Control': 'public, max-age=600',
+          });
+
+          res.end(bin);
+        });
+      }).end();
+    } else {
+      res.writeHead(404);
+      res.end();
+    }
   } catch(e) {
     console.error(e);
+    res.write(500, e.message);
+    res.end();
   }
 
 

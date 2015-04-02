@@ -95,5 +95,9 @@ page.open(settings.pageUrl, function(status) {
   console.log('PhantomJs server instance is running.');
 });
 
+page.onConsoleMessage = function(msg, lineNum, sourceId) {
+  console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
+};
+
 
 
