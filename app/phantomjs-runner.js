@@ -9,6 +9,7 @@ var settings = {
     format: 'jpeg',
     quality: '100'
   },
+  port: 8080,
   requestTimeout: 3000
 };
 
@@ -51,8 +52,7 @@ page.open(settings.pageUrl, function(status) {
   console.log('phantomRunnerDefinition', JSON.stringify(phantomRunnerDefinition));
 
   var server = webserver.create();
-  var service = server.listen(8080, function(request, response) {
-    console.log('ho!!!!!!!!');
+  var service = server.listen(settings.port, function(request, response) {
     var responseHelper = new ResponseHelper(response);
 
     var timeoutId = null;
@@ -68,7 +68,6 @@ page.open(settings.pageUrl, function(status) {
 
         if(data.base64) {
           base64 = data.base64;
-          console.log(base64.slice(0,50));
         }
 
         responseHelper.write(base64);

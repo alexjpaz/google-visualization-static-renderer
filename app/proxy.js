@@ -16,8 +16,14 @@ http.createServer(function (req, res) {
 
       response.on('end', function () {
         var bin = new Buffer(str, 'base64');
-        res.writeHead(200, {'Content-Type': 'image/png'});
-        res.end(bin.toString());
+        var expires = new Date();
+
+        res.writeHead(200, {
+          'Content-Type': 'image/png',
+          'Content-Length': bin.length,
+          'Cache-Control': 'public, max-age=600',
+        });
+        res.end(bin);
       });
     }).end();
   } catch(e) {

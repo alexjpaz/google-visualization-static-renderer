@@ -34,7 +34,7 @@
       google.visualization.events.addListener(chart, 'ready', function () {
         if (typeof window.callPhantom === 'function') {
           window.callPhantom({
-            base64: chart.getImageURI().slice(22)
+            base64: chart.getImageURI().split(',')[1]
           });
         }
       });

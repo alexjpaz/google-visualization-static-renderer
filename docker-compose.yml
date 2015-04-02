@@ -23,7 +23,7 @@ staticWeb:
 proxy:
   image: dockerfile/nodejs
   ports:
-    - "9999:9999"
+    - "80:9999"
   volumes:
     - app:/app
   entrypoint:
