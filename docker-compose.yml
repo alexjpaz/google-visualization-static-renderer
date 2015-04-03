@@ -7,8 +7,7 @@ phantomjs:
   ports:
     - "6666:80"
   volumes:
-    - app:/app
-    - .tmp/:/var/phantomjs/
+    - containers/phantomjs/app:/app
   links:
     - static
   restart: always
@@ -17,9 +16,7 @@ phantomjs:
 static:
   build: ./containers/static
   ports:
-    - "8081:80"
-  volumes:
-    - ./tmp/static:/usr/share/nginx/html
+    - "8080:80"
   restart: always
 
 proxy:

@@ -31,6 +31,8 @@
       function parseChartDataFromRequest(request) {
         var json = {};
 
+        console.debug(request.url);
+
         var jsonParam = decodeURIComponent(request.url.replace(/.*json=/g,''));
 
         json = JSON.parse(jsonParam);

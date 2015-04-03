@@ -17,6 +17,7 @@ angular.module('app', [])
 
         options: {
           'title': 'Countries',
+          chartArea:{left:10,top:20,width:"100%",height:"100%"}
 
         },
     };

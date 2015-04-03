@@ -3,8 +3,6 @@ var URL = require('url');
 
 
 http.createServer(function (req, res) {
-  console.log(req.url);
-
   try {
     var url = URL.parse(req.url, true);
 
