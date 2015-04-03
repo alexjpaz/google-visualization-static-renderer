@@ -1,14 +1,11 @@
 var http = require('http');
 var URL = require('url');
 
-console.log('HELLO');
 
 http.createServer(function (req, res) {
-  console.log(req);
+  console.log(req.url);
 
   try {
-    console.log(req.url);
-
     var url = URL.parse(req.url, true);
 
     if(url.pathname === "/chart") {
@@ -43,9 +40,7 @@ http.createServer(function (req, res) {
     }
   } catch(e) {
     console.error(e);
-    res.write(500, e.message);
-    res.end();
+    res.writeHead(500);
+    res.end(e.message);
   }
-
-
 }).listen(80);

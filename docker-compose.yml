@@ -6,13 +6,13 @@ phantomjs:
     - http://static/gvcharts.html
   ports:
     - "6666:80"
-  expose:
-    - "80:80"
   volumes:
     - app:/app
     - .tmp/:/var/phantomjs/
   links:
     - static
+  restart: always
+  mem_limit: 4G
 
 static:
   build: ./containers/static
@@ -20,6 +20,7 @@ static:
     - "8081:80"
   volumes:
     - ./tmp/static:/usr/share/nginx/html
+  restart: always
 
 proxy:
   build: ./containers/proxy
@@ -27,3 +28,4 @@ proxy:
     - "80:80"
   links:
     - phantomjs
+  restart: always

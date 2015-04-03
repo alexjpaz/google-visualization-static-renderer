@@ -9,7 +9,7 @@ var settings = {
     format: 'jpeg',
     quality: '100'
   },
-  port: 8080,
+  port: 80,
   requestTimeout: 3000
 };
 

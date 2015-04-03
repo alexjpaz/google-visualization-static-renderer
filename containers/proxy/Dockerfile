@@ -1,3 +1,3 @@
 FROM dockerfile/nodejs
-COPY ./ /app
-ENTRYPOINT ['node', '/app/proxy.js']
+COPY . /data
+ENTRYPOINT node /data/proxy.js
