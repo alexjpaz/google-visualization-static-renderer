@@ -5,6 +5,8 @@
     </style>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <script type="text/javascript">
+      var executor = window.callPhantom;
+
       google.load("visualization", '1', {packages:['corechart']});
 
       google.setOnLoadCallback(function() {
@@ -12,14 +14,23 @@
       });
 
       function execute(request) {
-        var wrapper = parseChartDataFromRequest(request);
-        renderChart(wrapper);
+        try{
+          var wrapper = parseChartDataFromRequest(request);
+          renderChart(wrapper);
+        } catch(e) {
+          console.error(e);
+          executor({
+            status: 'failure',
+            message: e.message
+          });
+        }
       }
 
       function renderChart(wrapper) {
         google.visualization.events.addListener(wrapper, 'ready', function () {
           if (typeof window.callPhantom === 'function') {
             window.callPhantom({
+              status: "success",
               base64: wrapper.getChart().getImageURI().split(',')[1]
             });
           }
@@ -30,8 +41,6 @@
 
       function parseChartDataFromRequest(request) {
         var json = {};
-
-        console.debug(request.url);
 
         var jsonParam = decodeURIComponent(request.url.replace(/.*json=/g,''));
 

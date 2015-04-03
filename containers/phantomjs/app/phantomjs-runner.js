@@ -40,7 +40,7 @@ var ResponseHelper = function(response) {
 
 page.open(settings.pageUrl, function(status) {
   if (status !== 'success') {
-    console.log('FAIL to load the address');
+    console.log('Failed to load the address', settings.pageUrl);
     phantom.exit(1);
   }
 
@@ -48,8 +48,12 @@ page.open(settings.pageUrl, function(status) {
     return getPhantomRunnerDefinition();
   });
 
-  console.log('Opened page', settings.pageUrl);
-  console.log('phantomRunnerDefinition', JSON.stringify(phantomRunnerDefinition));
+  if(!phantomRunnerDefinition) {
+    console.error("Unable to get runner definition from page.");
+    phantom.exit(2);
+  }
+
+  console.log('Opened page', settings.pageUrl, JSON.stringify(phantomRunnerDefinition));
 
   var server = webserver.create();
   var service = server.listen(settings.port, function(request, response) {
@@ -64,15 +68,19 @@ page.open(settings.pageUrl, function(status) {
 
     try {
       page.onCallback = function(data) {
-        var base64 = null;
+        if(data.status === "success") {
+          var base64 = null;
 
-        if(data.base64) {
-          base64 = data.base64;
+          if(data.base64) {
+            base64 = data.base64;
+          }
+
+          responseHelper.write(base64);
+          clearTimeout(timeoutId);
+
+        } else {
+          responseHelper.error(data.message);
         }
-
-        responseHelper.write(base64);
-        clearTimeout(timeoutId);
-        console.log('Callback fired');
       };
 
       returnValue = page.evaluate(function(request) {

@@ -3,7 +3,7 @@ phantomjs:
   entrypoint:
     - phantomjs
     - /app/phantomjs-runner.js
-    - http://static/gvcharts.html
+    - http://static/chart/
   ports:
     - "6666:80"
   volumes:
