@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <style>
+      body { background: #fff; color: #000; }
+    </style>
+    <script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", '1', {packages:['corechart']});
+
+      google.setOnLoadCallback(function() {
+        window.callPhantom({'ready': true});
+      });
+
+      function execute(request) {
+        var wrapper = parseChartDataFromRequest(request);
+        renderChart(wrapper);
+      }
+
+      function renderChart(wrapper) {
+        google.visualization.events.addListener(wrapper, 'ready', function () {
+          if (typeof window.callPhantom === 'function') {
+            window.callPhantom({
+              base64: wrapper.getChart().getImageURI().split(',')[1]
+            });
+          }
+        });
+
+        wrapper.draw();
+      }
+
+      function parseChartDataFromRequest(request) {
+        var json = {};
+
+        var jsonParam = decodeURIComponent(request.url.replace(/.*json=/g,''));
+
+        json = JSON.parse(jsonParam);
+
+        json.containerId = 'chart_div';
+
+        var wrapper = new google.visualization.ChartWrapper(json);
+
+        return wrapper;
+      }
+    </script>
+  </head>
+  <body>
+
+    <div id='chart_div'></div>
+
+    <script>
+      function getPhantomRunnerDefinition() {
+        return {
+          executeOnPageLoad: false,
+          isAsync: true,
+          execute: execute
+        }
+      }
+    </script>
+  </body>
+</html>

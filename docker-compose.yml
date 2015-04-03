@@ -1,31 +1,29 @@
 phantomjs:
-  image: alexjpaz/phantomjs
+  image: cmfatih/phantomjs
   entrypoint:
     - phantomjs
     - /app/phantomjs-runner.js
-    - http://192.168.59.103:8081/gvcharts.html
+    - http://static/gvcharts.html
   ports:
-    - "8080:8080"
-    #- "9090:8000"
+    - "6666:80"
   expose:
-    - "6666:8080"
+    - "80:80"
   volumes:
     - app:/app
     - .tmp/:/var/phantomjs/
+  links:
+    - static
 
-staticWeb:
-  image: dockerfile/nginx
+static:
+  build: ./containers/static
   ports:
     - "8081:80"
   volumes:
-    - app:/var/www/html
+    - ./tmp/static:/usr/share/nginx/html
 
 proxy:
-  image: dockerfile/nodejs
+  build: ./containers/proxy
   ports:
-    - "80:9999"
-  volumes:
-    - app:/app
-  entrypoint:
-    - node
-    - /app/proxy.js
+    - "80:80"
+  links:
+    - phantomjs
