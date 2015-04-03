@@ -19,6 +19,10 @@ var page = (function createPage() {
 })();
 
 var ResponseHelper = function(response) {
+  var timeoutId = setTimeout(function() {
+      responseHelper.error('Request timed out', 408);
+  }, settings.requestTimeout);
+
   this.error = function(message, status) {
     status = status || 500;
     message = message || "Unknonw error occured";
@@ -31,6 +35,7 @@ var ResponseHelper = function(response) {
   };
 
   this.write = function(rawData, status) {
+    clearTimeout(timeoutId);
     status = status || 200;
     response.write(rawData, status);
     response.statusCode = status;
@@ -59,12 +64,7 @@ page.open(settings.pageUrl, function(status) {
   var service = server.listen(settings.port, function(request, response) {
     var responseHelper = new ResponseHelper(response);
 
-    var timeoutId = null;
     var returnValue = null;
-
-    timeoutId = setTimeout(function() {
-      responseHelper.error('Request timed out', 408);
-    }, settings.requestTimeout);
 
     try {
       page.onCallback = function(data) {
@@ -76,8 +76,6 @@ page.open(settings.pageUrl, function(status) {
           }
 
           responseHelper.write(base64);
-          clearTimeout(timeoutId);
-
         } else {
           responseHelper.error(data.message);
         }
@@ -89,15 +87,9 @@ page.open(settings.pageUrl, function(status) {
 
       if(!!returnValue && !returnValue.async) {
         responseHelper.json(returnValue);
-        clearTimeout(timeoutId);
-      }
-
-      if(!returnValue || returnValue.async) {
-        console.log('Waiting for callback');
       }
     } catch(e) {
       responseHelper.error(e);
-      clearTimeout(timeoutId);
     }
   });
   console.log('PhantomJs server instance is running.');

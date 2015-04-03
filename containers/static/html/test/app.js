@@ -7,10 +7,8 @@ angular.module('alexjpaz/charts', [])
       options: {
         'title': 'Countries',
         "chartArea": {
-          left: 0,
-          right: 0,
-          width: "100%",
-          height: "100%"
+          left: 10,
+          top: 10,
         }
       },
       containerId: 'visualization'

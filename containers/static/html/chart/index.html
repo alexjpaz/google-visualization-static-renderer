@@ -18,7 +18,6 @@
           var wrapper = parseChartDataFromRequest(request);
           renderChart(wrapper);
         } catch(e) {
-          console.error(e);
           executor({
             status: 'failure',
             message: e.message
