@@ -19,10 +19,10 @@ static:
     - "8080:80"
   restart: always
 
-proxy:
-  build: ./containers/proxy
-  ports:
-    - "80:80"
-  links:
-    - phantomjs
-  restart: always
+#proxy:
+  #build: ./containers/proxy
+  #ports:
+    #- "80:80"
+  #links:
+    #- phantomjs
+  #restart: always

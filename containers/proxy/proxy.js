@@ -1,5 +1,7 @@
 var http = require('http');
+var PngCrush = require('pngcrush');
 var URL = require('url');
+var stream = require('stream');
 
 
 http.createServer(function (req, res) {
@@ -7,10 +9,13 @@ http.createServer(function (req, res) {
     var url = URL.parse(req.url, true);
 
     if(url.pathname === "/chart") {
+      console.log('hi');
       var json = JSON.parse(JSON.stringify(url.query.json));
 
       http.request({
-        host: 'phantomjs',
+        //host: 'phantomjs',
+        host: '192.168.59.104',
+        port: 6666,
         path: req.url
       }, function(response) {
         var str = '';
@@ -20,16 +25,23 @@ http.createServer(function (req, res) {
         });
 
         response.on('end', function () {
-          var bin = new Buffer(str, 'base64');
-          var expires = new Date();
-
           res.writeHead(200, {
             'Content-Type': 'image/png',
-            'Content-Length': bin.length,
+            //'Content-Length': bin.length,
             'Cache-Control': 'public, max-age=600',
           });
 
-          res.end(bin);
+          var bin = new Buffer(str, 'base64');
+          var bufferStream = new stream.PassThrough();
+          var crusher = new PngCrush(['-res', 300, '-rle']);
+          bufferStream.pipe(crusher).pipe(res);
+          //bufferStream.pipe(res);
+          bufferStream.push(bin);
+
+          bufferStream.end();
+
+
+
         });
       }).end();
     } else {
@@ -41,4 +53,6 @@ http.createServer(function (req, res) {
     res.writeHead(500);
     res.end(e.message);
   }
-}).listen(80);
+}).listen(9999);
+
+console.log('proxy');
