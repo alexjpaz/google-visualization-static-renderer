@@ -3,19 +3,20 @@ var PngCrush = require('pngcrush');
 var URL = require('url');
 var stream = require('stream');
 
+var settings = {
+  bindPort: 80,
+  PngCrush: ['-res', 300, '-rle']
+};
 
 http.createServer(function (req, res) {
   try {
     var url = URL.parse(req.url, true);
 
     if(url.pathname === "/chart") {
-      console.log('hi');
       var json = JSON.parse(JSON.stringify(url.query.json));
 
       http.request({
-        //host: 'phantomjs',
-        host: '192.168.59.104',
-        port: 6666,
+        host: 'phantomjs',
         path: req.url
       }, function(response) {
         var str = '';
@@ -27,21 +28,15 @@ http.createServer(function (req, res) {
         response.on('end', function () {
           res.writeHead(200, {
             'Content-Type': 'image/png',
-            //'Content-Length': bin.length,
             'Cache-Control': 'public, max-age=600',
           });
 
           var bin = new Buffer(str, 'base64');
           var bufferStream = new stream.PassThrough();
-          var crusher = new PngCrush(['-res', 300, '-rle']);
-          bufferStream.pipe(crusher).pipe(res);
-          //bufferStream.pipe(res);
+          var crusher = new PngCrush(settings.PngCrush);
           bufferStream.push(bin);
-
+          bufferStream.pipe(new PngCrush(['-res', 300, '-rle'])).pipe(res);
           bufferStream.end();
-
-
-
         });
       }).end();
     } else {
@@ -53,6 +48,5 @@ http.createServer(function (req, res) {
     res.writeHead(500);
     res.end(e.message);
   }
-}).listen(9999);
+}).listen(settings.bindPort);
 
-console.log('proxy');

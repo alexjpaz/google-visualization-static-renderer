@@ -1,6 +1,2 @@
-FROM node:0.10-onbuild
-
+FROM node:onbuild
 RUN apt-get update -y && apt-get install -y pngcrush
-
-COPY . /data
-ENTRYPOINT node /data/proxy.js
