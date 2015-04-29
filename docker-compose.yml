@@ -25,4 +25,8 @@ proxy:
     - "80:80"
   links:
     - phantomjs
+    - redis
   restart: always
+
+redis:
+  image: redis

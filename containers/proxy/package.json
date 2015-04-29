@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pngcrush": "^0.1.0"
+    "hiredis": "^0.3.0",
+    "pngcrush": "^0.1.0",
+    "redis": "^0.12.1"
   }
 }
